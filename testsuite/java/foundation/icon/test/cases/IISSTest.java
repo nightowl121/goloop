@@ -99,11 +99,11 @@ public class IISSTest extends TestBase {
 
     @Test
     public void getPrep() throws Exception {
-        Object obj = score.getPrep(testWallets[0], score.getAddress());
+        Object obj = score.getPrep(testWallets[0], testWallets[0].getAddress());
         System.out.println(obj);
     }
 
-/*    @Test
+    @Test
     public void registerPRep() throws Exception {
         String name = "ABC";
         String email = "abc@example.com";
@@ -116,9 +116,9 @@ public class IISSTest extends TestBase {
         TransactionResult result = chainScore.registerPRep(testWallets[0], name, email, country, city, website, details, p2pEndpoint, nodeAddress);
         System.out.println(result.getStatus());
         System.out.println(result.toString());
-    }*/
+    }
 
-    @Test
+/*    @Test
     public void registerPRepByScore() throws Exception {
         BigInteger fee = ICX.multiply(new BigInteger("2500"));
         String name = "ABC";
@@ -132,7 +132,7 @@ public class IISSTest extends TestBase {
         TransactionResult result = score.registerPRep(testWallets[0], name, email, country, city, website, details, p2pEndpoint, nodeAddress, fee);
         System.out.println(result.getStatus());
         System.out.println(result.toString());
-    }
+    }*/
 
 /*   @Test
     public void unregisterPRepByScore() throws Exception {
@@ -141,4 +141,12 @@ public class IISSTest extends TestBase {
         System.out.println(result.getStatus());
         System.out.println(result.toString());
     }*/
+
+    @Test
+    public void unregisterPRep() throws Exception {
+
+        TransactionResult result = chainScore.unregisterPRep(testWallets[0]);
+        System.out.println(result.getStatus());
+        System.out.println(result.toString());
+    }
 }

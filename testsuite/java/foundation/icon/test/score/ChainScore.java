@@ -133,4 +133,9 @@ public class ChainScore extends Score {
                 .build();
         return invokeAndWaitResult(wallet, "registerPRep", params, new BigInteger("2500000000000000000000"), Constants.DEFAULT_STEPS);
     }
+
+    public TransactionResult unregisterPRep(Wallet wallet)
+            throws IOException, ResultTimeoutException {
+        return invokeAndWaitResult(wallet, "unregisterPRep", null, null, Constants.DEFAULT_STEPS);
+    }
 }
