@@ -97,4 +97,7 @@ class SystemInterface {
     void setRoundLimitFactor(int factor) {
         Context.call(CHAIN_SCORE, "setRoundLimitFactor", factor);
     }
+    void getStake() {
+        Context.call(CHAIN_SCORE, "getStake");
+    }
 }

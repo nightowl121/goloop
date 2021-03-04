@@ -25,6 +25,7 @@ public class Constants {
     public static final String TAG_PY_GOV = "pyGov";
     public static final String TAG_JAVA_SCORE = "javaScore";
     public static final String TAG_JAVA_GOV = "javaGov";
+    public static final String TAG_JAVA_INTEGRATION = "javaIntegration";
 
     public static final BigInteger STATUS_SUCCESS = BigInteger.ONE;
     public static final BigInteger STATUS_FAILURE = BigInteger.ZERO;

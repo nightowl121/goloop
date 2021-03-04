@@ -106,4 +106,31 @@ public class ChainScore extends Score {
                 .build();
         return invokeAndWaitResult(wallet, "enableScore", params, null, Constants.DEFAULT_STEPS);
     }
+
+    public TransactionResult setStake(Wallet wallet, BigInteger val)
+            throws IOException, ResultTimeoutException {
+        RpcObject params = new RpcObject.Builder()
+                .put("value", new RpcValue(val))
+                .build();
+        return invokeAndWaitResult(wallet, "setStake", params, null, Constants.DEFAULT_STEPS);
+    }
+
+    public BigInteger getStake() throws IOException {
+        return call("getStake", null).asInteger();
+    }
+
+    public TransactionResult registerPRep(Wallet wallet, String name, String email, String country, String city, String website, String details, String p2pEndpoint, String nodeAddress)
+            throws IOException, ResultTimeoutException {
+        RpcObject params = new RpcObject.Builder()
+                .put("name", new RpcValue(name))
+                .put("email", new RpcValue(email))
+                .put("country", new RpcValue(country))
+                .put("city", new RpcValue(city))
+                .put("website", new RpcValue(website))
+                .put("details", new RpcValue(details))
+                .put("p2pEndpoint", new RpcValue(p2pEndpoint))
+                .put("nodeAddress", new RpcValue(nodeAddress))
+                .build();
+        return invokeAndWaitResult(wallet, "registerPRep", params, new BigInteger("2500000000000000000000"), Constants.DEFAULT_STEPS);
+    }
 }

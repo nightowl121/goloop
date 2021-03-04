@@ -42,13 +42,14 @@ compileTestJava {
 }
 
 class ChainTest extends Test {
-    String configFile = "./data/config.json"
+    String configFile = "../config.json"
     String logFile = ".chain/normal.log"
     String envFile = "./data/env.properties"
     String chainDir = ".chain/normal"
     String gsFile = null
     String gsDir = null
     String dockerEnv = null
+    String platform = "icon"
     Process process = null
 
     void startServer() {
@@ -65,8 +66,11 @@ class ChainTest extends Test {
             commands.add("--genesis")
             commands.add(gsDir)
         }
+        commands.add("--platform")
+        commands.add(platform)
         def logLevel = System.getProperty("LOG_LEVEL")
         if (logLevel != null && logLevel.length() != 0) {
+            System.out.println("log : " + logLevel)
             commands.add("--log_level=" + logLevel)
         }
 
@@ -84,7 +88,7 @@ class ChainTest extends Test {
         File log_file = new File(logFile)
         pb.redirectError(log_file)
         pb.redirectOutput(log_file)
-
+        System.out.println(pb.println())
         process = pb.start()
 
         // Hook shutdown for kill the process for sure
@@ -236,6 +240,21 @@ task testJavaGov(type: ChainTest, overwrite: true) {
     useJUnitPlatform {
         includeTags "javaGov"
     }
+    configFile = "../config.json"
+    chainDir = ".chain/javagov"
+    logFile = ".chain/javagov.log"
+    //gsDir = "./data/genesisStorage/genesis_javagov.json"
+    envFile = "./data/chainenv/javagov.props"
+    //dockerEnv = "javagov"
+
+    dependsOn 'cleanTestJavaGov'
+    testLogging.showStandardStreams = true
+}
+
+task testJavaIntegration(type: ChainTest, overwrite: true) {
+    useJUnitPlatform {
+        includeTags "javaIntegration"
+    }
     configFile = "./data/config/javagov.json"
     chainDir = ".chain/javagov"
     logFile = ".chain/javagov.log"
@@ -243,7 +262,7 @@ task testJavaGov(type: ChainTest, overwrite: true) {
     envFile = "./data/chainenv/javagov.props"
     dockerEnv = "javagov"
 
-    dependsOn 'cleanTestJavaGov'
+    dependsOn 'cleanTestJavaScore'
     testLogging.showStandardStreams = true
 }
 

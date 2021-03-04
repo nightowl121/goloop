@@ -72,6 +72,8 @@ public class Score {
         if (params == null) {
             params = new RpcObject.Builder().build();
         }
+        System.out.println(getAddress());
+        System.out.println(method);
         Call<RpcItem> call = new Call.Builder()
                 .to(getAddress())
                 .method(method)
