@@ -2,9 +2,7 @@ package foundation.icon.test.cases;
 
 import foundation.icon.icx.IconService;
 import foundation.icon.icx.KeyWallet;
-import foundation.icon.icx.data.Bytes;
 import foundation.icon.icx.transport.http.HttpProvider;
-import foundation.icon.icx.transport.jsonrpc.RpcObject;
 import foundation.icon.test.common.Constants;
 import foundation.icon.test.common.Env;
 import foundation.icon.test.common.TestBase;
@@ -17,14 +15,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import foundation.icon.icx.data.TransactionResult;
 import foundation.icon.icx.data.Address;
-import org.junit.jupiter.params.provider.EnumSource;
 
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 @Tag(Constants.TAG_JAVA_INTEGRATION)
-
 public class IISSTest extends TestBase {
     private static final String SCORE_STATUS_PENDING = "pending";
     private static final String SCORE_STATUS_ACTIVE = "active";
@@ -77,8 +71,12 @@ public class IISSTest extends TestBase {
         TransactionResult result = score.setStake(testWallets[0], val);
         System.out.println(result.getStatus());
         System.out.println(result.toString());
+    }
 
-        result = score.getBalance(testWallets[0]);
+    @Test
+    public void setDelegation() throws Exception {
+        String val = "60";
+        TransactionResult result = score.setDelegation(testWallets[0], testWallets[1].getAddress(), val);
         System.out.println(result.getStatus());
         System.out.println(result.toString());
     }
@@ -141,12 +139,12 @@ public class IISSTest extends TestBase {
         System.out.println(result.getStatus());
         System.out.println(result.toString());
     }*/
-
+/*
     @Test
     public void unregisterPRep() throws Exception {
 
         TransactionResult result = chainScore.unregisterPRep(testWallets[0]);
         System.out.println(result.getStatus());
         System.out.println(result.toString());
-    }
+    }*/
 }

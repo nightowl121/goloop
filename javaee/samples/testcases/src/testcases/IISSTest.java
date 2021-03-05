@@ -6,7 +6,9 @@ import score.annotation.External;
 import score.annotation.Payable;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
+
 public class IISSTest {
     private String name;
    // private Map<String, Object> map = new HashMap<String, Object>();
@@ -29,23 +31,31 @@ public class IISSTest {
     public  void setStake(BigInteger value) {
         Object obj = Context.call(CHAIN_SCORE, "setStake", value);
     }
+
+    @External
+    public  void setDelegation(Address address, BigInteger value) {
+        Delegation [] delegations = new Delegation[1];
+        delegations[0] = new Delegation();
+        delegations[0].setAddress(address);
+        delegations[0].setValue(value);
+        Object obj = Context.call(CHAIN_SCORE, "setDelegation", delegations);
+    }
+
     @External(readonly = true)
     public  Map getStakeByScore(Address address) {
         Map<String, Object> map = (Map<String, Object>)Context.call(CHAIN_SCORE, "getStake", address);
         return map;
     }
+
     @External
     public  void getBalance() {
         BigInteger bal = Context.getBalance(Context.getCaller());
         Context.println("balance : " + bal.toString());
-        //EmitEvent(bal.toByteArray());
     }
 
     @External(readonly = true)
     public  Map getPRepByScore(Address address) {
         Map<String, Object> map  = (Map<String, Object>)Context.call(CHAIN_SCORE, "getPRep", address);
-/*        Map<String, String> mapInner  = (Map<String, String> )map.get("error");
-        String name = mapInner.get("message");*/
         return map;
     }
 
@@ -60,5 +70,28 @@ public class IISSTest {
     @External
     public  void unregisterPRep() {
         Object obj = Context.call(CHAIN_SCORE, "unregisterPRep");
+    }
+
+    class Delegation {
+        private Address address;
+        private BigInteger value;
+
+        public Delegation() {}
+
+        public Address getAddress() {
+            return address;
+        }
+
+        public void setAddress(Address address) {
+            this.address = address;
+        }
+
+        public BigInteger getValue() {
+            return value;
+        }
+
+        public void setValue(BigInteger value) {
+            this.value = value;
+        }
     }
 }

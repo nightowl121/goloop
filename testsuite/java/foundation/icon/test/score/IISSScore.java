@@ -9,7 +9,6 @@ import foundation.icon.test.common.Constants;
 import foundation.icon.test.common.ResultTimeoutException;
 import foundation.icon.test.common.TransactionFailureException;
 import foundation.icon.test.common.TransactionHandler;
-import testcases.IISSTest;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -27,7 +26,6 @@ public class IISSScore extends Score  {
         RpcObject params = new RpcObject.Builder()
                 .put("name", new RpcValue("IISSTest"))
                 .build();
-
         return new IISSScore(txHandler.deploy(wallet, testcases.IISSTest.class, params));
     }
 
@@ -38,6 +36,16 @@ public class IISSScore extends Score  {
                 .build();
         return invokeAndWaitResult(from, "setStake", params, val, Constants.DEFAULT_STEPS);
     }
+
+    public TransactionResult setDelegation(Wallet from, Address address, String value) throws ResultTimeoutException, IOException {
+        BigInteger val = new BigInteger(value);
+        RpcObject params = new RpcObject.Builder()
+                .put("address", new RpcValue(address))
+                .put("value", new RpcValue(val))
+                .build();
+        return invokeAndWaitResult(from, "setDelegation", params, null, Constants.DEFAULT_STEPS);
+    }
+
     public TransactionResult getBalance(Wallet from) throws ResultTimeoutException, IOException {
         return invokeAndWaitResult(from, "getBalance", null, null, Constants.DEFAULT_STEPS);
     }
