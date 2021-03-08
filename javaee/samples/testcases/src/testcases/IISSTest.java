@@ -12,21 +12,12 @@ import java.util.Map;
 
 public class IISSTest {
     private String name;
-   // private Map<String, Object> map = new HashMap<String, Object>();
     private static final Address CHAIN_SCORE = Address.fromString("cx0000000000000000000000000000000000000000");
-    @EventLog
-    public void EmitEvent(String data) {}
 
     public IISSTest(String name) {
         this.name = name;
     }
 
-/*    @External
-    public  Object getStake() {
-        Address system_address = score.Address.fromString("cx0000000000000000000000000000000000000000");
-        return Context.call(system_address, "getStake");
-    }
-*/
     @Payable
     @External
     public  void setStake(BigInteger value) {
@@ -48,7 +39,7 @@ public class IISSTest {
         bondList[0] = new ValueContainer();
         bondList[0].setAddress(address);
         bondList[0].setValue(value);
-        Object obj = Context.call(CHAIN_SCORE, "setBond", (Object)bondList);
+        Object obj = Context.call(CHAIN_SCORE, "setDelegation", (Object)bondList);
     }
 
     @External(readonly = true)
@@ -81,6 +72,9 @@ public class IISSTest {
     public  void unregisterPRep() {
         Object obj = Context.call(CHAIN_SCORE, "unregisterPRep");
     }
+
+    @EventLog
+    public void EmitEvent(String data) {}
 
     public static class ValueContainer {
         private Address address;
