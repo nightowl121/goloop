@@ -88,7 +88,6 @@ class ChainTest extends Test {
         File log_file = new File(logFile)
         pb.redirectError(log_file)
         pb.redirectOutput(log_file)
-        System.out.println(pb.println())
         process = pb.start()
 
         // Hook shutdown for kill the process for sure

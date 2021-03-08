@@ -46,6 +46,15 @@ public class IISSScore extends Score  {
         return invokeAndWaitResult(from, "setDelegation", params, null, Constants.DEFAULT_STEPS);
     }
 
+    public TransactionResult setBond(Wallet from, Address address, String value) throws ResultTimeoutException, IOException {
+        BigInteger val = new BigInteger(value);
+        RpcObject params = new RpcObject.Builder()
+                .put("address", new RpcValue(address))
+                .put("value", new RpcValue(val))
+                .build();
+        return invokeAndWaitResult(from, "setBond", params, null, Constants.DEFAULT_STEPS);
+    }
+
     public TransactionResult getBalance(Wallet from) throws ResultTimeoutException, IOException {
         return invokeAndWaitResult(from, "getBalance", null, null, Constants.DEFAULT_STEPS);
     }
@@ -59,7 +68,6 @@ public class IISSScore extends Score  {
     }
 
     public Object getPrep(Wallet from, Address address) throws ResultTimeoutException, IOException {
-        System.out.println(address.toString());
         RpcObject params = new RpcObject.Builder()
                 .put("address", new RpcValue(address))
                 .build();
@@ -78,7 +86,6 @@ public class IISSScore extends Score  {
                 .put("p2pEndpoint", new RpcValue(p2pEndpoint))
                 .put("nodeAddress", new RpcValue(nodeAddress))
                 .build();
-        System.out.println(fee);
         return invokeAndWaitResult(wallet, "registerPrepByScore", params, fee, Constants.DEFAULT_STEPS);
     }
 

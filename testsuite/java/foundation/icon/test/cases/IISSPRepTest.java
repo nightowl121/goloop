@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import static foundation.icon.test.common.Env.LOG;
 
 @Tag(Constants.TAG_JAVA_INTEGRATION)
-public class IISSTest extends TestBase {
+public class IISSPRepTest extends TestBase {
     private static final String SCORE_STATUS_PENDING = "pending";
     private static final String SCORE_STATUS_ACTIVE = "active";
     private static final String SCORE_STATUS_REJECTED = "rejected";
@@ -68,8 +68,9 @@ public class IISSTest extends TestBase {
     }
 
     @Test
-    public void registerPRepAndSetBonderListByRPC() throws Exception {
-        LOG.infoEntering("registerPRepAndSetBonderListByRPC");
+    public void registerPRepByScore() throws Exception {
+        LOG.infoEntering("registerPRepByScore");
+        BigInteger fee = ICX.multiply(new BigInteger("2000"));
         String name = "ABC";
         String email = "abc@example.com";
         String country = "KOR";
@@ -77,73 +78,18 @@ public class IISSTest extends TestBase {
         String website = "https://abc.example.com/";
         String details = "https://abc.example.com/details/";
         String p2pEndpoint = "123.45.67.89:7100";
-        String nodeAddress = testWallets[1].getAddress().toString();
-        TransactionResult result = chainScore.registerPRep(testWallets[1], name, email, country, city, website, details, p2pEndpoint, nodeAddress, ICX.multiply(new BigInteger("2000")));
-        assertSuccess(result);
-
-        String [] arrayAddress = {score.getAddress().toString()};
-        result = chainScore.setBonderList(testWallets[1], arrayAddress);
-        assertSuccess(result);
+        Address nodeAddress = testWallets[0].getAddress();
+        TransactionResult result = score.registerPRep(testWallets[0], name, email, country, city, website, details, p2pEndpoint, nodeAddress, fee);
+        assertFailure(result);
         LOG.infoExiting();
     }
 
     @Test
-    public void setStake() throws Exception {
-        LOG.infoEntering("setStake");
-        String val = "1000";
-        TransactionResult result = score.setStake(testWallets[0], val);
-        assertSuccess(result);
+    public void unregisterPRepByScore() throws Exception {
+        LOG.infoEntering("unregisterPRepByScore");
+        TransactionResult result = score.unregister(testWallets[0]);
+        assertFailure(result);
         LOG.infoExiting();
     }
 
-    @Test
-    public void setDelegation() throws Exception {
-        LOG.infoEntering("setDelegation");
-        String val = "300";
-        TransactionResult result = score.setDelegation(testWallets[0], testWallets[1].getAddress(), val);
-        assertSuccess(result);
-        LOG.infoExiting();
-    }
-
-    @Test
-    public void setBond() throws Exception {
-        LOG.infoEntering("setBond");
-        String val = "300";
-        TransactionResult result = score.setBond(testWallets[0], testWallets[1].getAddress(), val);
-        assertSuccess(result);
-        LOG.infoExiting();
-    }
-
-    @Test
-    public void getStake() throws Exception {
-        LOG.infoEntering("getStake");
-        Object obj = score.getStake(testWallets[0], score.getAddress());
-        System.out.println(obj);
-        LOG.infoExiting();
-    }
-
-    @Test
-    public void getBalanced() throws Exception {
-        LOG.infoEntering("getBalanced");
-        TransactionResult result = score.getBalance(testWallets[0]);
-        assertSuccess(result);
-        LOG.infoExiting();
-    }
-
-    @Test
-    public void getPrep() throws Exception {
-        LOG.infoEntering("getPrep");
-        Object obj = score.getPrep(testWallets[1], testWallets[1].getAddress());
-        System.out.println(obj);
-        LOG.infoExiting();
-    }
-
-/*
-    @Test
-    public void unregisterPRep() throws Exception {
-
-        TransactionResult result = chainScore.unregisterPRep(testWallets[0]);
-        System.out.println(result.getStatus());
-        System.out.println(result.toString());
-    }*/
 }

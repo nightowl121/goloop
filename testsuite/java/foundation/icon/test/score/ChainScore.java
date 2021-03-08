@@ -119,7 +119,7 @@ public class ChainScore extends Score {
         return call("getStake", null).asInteger();
     }
 
-    public TransactionResult registerPRep(Wallet wallet, String name, String email, String country, String city, String website, String details, String p2pEndpoint, String nodeAddress)
+    public TransactionResult registerPRep(Wallet wallet, String name, String email, String country, String city, String website, String details, String p2pEndpoint, String nodeAddress, BigInteger fee)
             throws IOException, ResultTimeoutException {
         RpcObject params = new RpcObject.Builder()
                 .put("name", new RpcValue(name))
@@ -131,7 +131,19 @@ public class ChainScore extends Score {
                 .put("p2pEndpoint", new RpcValue(p2pEndpoint))
                 .put("nodeAddress", new RpcValue(nodeAddress))
                 .build();
-        return invokeAndWaitResult(wallet, "registerPRep", params, new BigInteger("2500000000000000000000"), Constants.DEFAULT_STEPS);
+        return invokeAndWaitResult(wallet, "registerPRep", params, fee, Constants.DEFAULT_STEPS);
+    }
+
+    public TransactionResult setBonderList(Wallet wallet, String [] address)
+            throws IOException, ResultTimeoutException {
+        RpcArray.Builder arrayBuilder = new RpcArray.Builder();
+        for(int i = 0 ; i < address.length ; i++) {
+            arrayBuilder.add( new RpcValue(address[i]));
+        }
+        RpcObject params = new RpcObject.Builder()
+                .put("bonderList", arrayBuilder.build())
+                .build();
+        return invokeAndWaitResult(wallet, "setBonderList", params, null, Constants.DEFAULT_STEPS);
     }
 
     public TransactionResult unregisterPRep(Wallet wallet)
