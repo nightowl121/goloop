@@ -19,8 +19,13 @@ jobs:
         with:
           go-version: 1.17.8
 
-      - name: AWS cli install
-        run: sudo apt install awscli -y
+      - name: AWS cli/docker install
+        run: |
+          sudo apt install awscli -y 
+          sudo curl -sSL https://get.docker.com/ && echo "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+          aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID --profile default
+          aws configure set  aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile default
+          aws configure set  region "us-east-1" --profile default
 
       - name: Test
         run: GOBUILD_TAGS= make test
@@ -30,8 +35,8 @@ jobs:
 
       - name: Docker Push
         run: |
-          AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f5d2t1f5
-          docker tag goloop/gochain-icon:latest public.ecr.aws/f5d2t1f5/goloop-gochain-icon:latest
-          docker push public.ecr.aws/f5d2t1f5/goloop-gochain-icon:latest
+          AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" aws ecr-public get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin public.ecr.aws/f5d2t1f5
+          sudo docker tag goloop/gochain-icon:latest public.ecr.aws/f5d2t1f5/goloop-gochain-icon:latest
+          sudo docker push public.ecr.aws/f5d2t1f5/goloop-gochain-icon:latest
     
       
