@@ -21,8 +21,9 @@ jobs:
 
       - name: AWS cli/docker install
         run: |
-          sudo apt install awscli -y 
-          sudo curl -sSL https://get.docker.com/ | sh && echo "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+          echo "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+          sudo apt install awscli -y && docker version
+          sudo curl -sSL https://get.docker.com/ | sh
           aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID --profile default
           aws configure set  aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile default
           aws configure set  region "us-east-1" --profile default
