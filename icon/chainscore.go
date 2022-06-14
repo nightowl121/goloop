@@ -938,6 +938,7 @@ func (s *chainScore) Install(param []byte) error {
 	var blockInterval int64
 	var validators []module.Validator
 	var handlers []contract.ContractHandler
+	blockInterval := int64(2000)
 	roundLimitFactor := int64(3)
 
 	switch s.cc.ChainID() {
@@ -1051,6 +1052,9 @@ func (s *chainScore) Install(param []byte) error {
 			}
 		}
 
+		if chainConfig.BlockInterval != nil {
+			blockInterval = chainConfig.BlockInterval.Value
+		}
 		if chainConfig.RoundLimitFactor != nil {
 			roundLimitFactor = chainConfig.RoundLimitFactor.Value
 		}
