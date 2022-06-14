@@ -935,7 +935,6 @@ func (s *chainScore) Install(param []byte) error {
 	var feeConfig *FeeConfig
 	var systemConfig int
 	var revision int
-	var blockInterval int64
 	var validators []module.Validator
 	var handlers []contract.ContractHandler
 	blockInterval := int64(2000)
