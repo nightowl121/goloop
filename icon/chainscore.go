@@ -1074,8 +1074,6 @@ func (s *chainScore) Install(param []byte) error {
 			s.log.Debugf("add validator %d: %v", i, validator)
 		}
 		feeConfig = &chainConfig.Fee
-
-		blockInterval = chainConfig.BlockInterval.Value
 	}
 
 	if err := scoredb.NewVarDB(as, state.VarRevision).Set(revision); err != nil {
