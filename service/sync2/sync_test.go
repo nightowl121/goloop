@@ -35,12 +35,6 @@ type tReactorItem struct {
 	priority uint8
 }
 
-type tPacket struct {
-	pi module.ProtocolInfo
-	b  []byte
-	id module.PeerID
-}
-
 type tNetworkManager struct {
 	module.NetworkManager
 	mutex        sync.Mutex
@@ -49,7 +43,6 @@ type tNetworkManager struct {
 	joinReactors []*tReactorItem
 	peers        []*tNetworkManager
 	drop         bool
-	recvBuf      []*tPacket
 }
 
 type tProtocolHandler struct {
@@ -225,19 +218,6 @@ func (nm *tNetworkManager) callOnReceive(pi module.ProtocolInfo, b []byte, id mo
 		runtime.Gosched()
 		r.reactor.OnReceive(pi, b, id)
 	}
-}
-
-func (nm *tNetworkManager) onReceiveUnicast(pi module.ProtocolInfo, b []byte, from module.PeerID) {
-	nm.recvBuf = append(nm.recvBuf, &tPacket{pi, b, from})
-}
-
-func (nm *tNetworkManager) processRecvBuf() {
-	for _, p := range nm.recvBuf {
-		for _, r := range nm.reactorItems {
-			r.reactor.OnReceive(p.pi, p.b, p.id)
-		}
-	}
-	nm.recvBuf = nil
 }
 
 func (ph *tProtocolHandler) Broadcast(pi module.ProtocolInfo, b []byte, bt module.BroadcastType) error {
@@ -451,7 +431,7 @@ func TestSyncSimpleStateSyncStop(t *testing.T) {
 	srcNM.join(dstNM)
 
 	// given init db for source sync manager
-	const dataSize = 100
+	const dataSize = 1_000_000
 	ws := state.NewWorldState(srcdb, nil, nil, nil, nil)
 	for i := range [dataSize]int{} {
 		v := []byte{byte(i)}
@@ -477,23 +457,28 @@ func TestSyncSimpleStateSyncStop(t *testing.T) {
 	// start forceSync
 	wg.Add(1)
 	go func() {
+		t.Logf("start ForceSync")
 		result, err := sSyncer.ForceSync()
 		t.Logf("ForceSync result=%v, err=%v", result, err)
 
 		// then result is nil, err is ErrInterrupted
 		assert.Nilf(t, result, "sync stop. result=%v", result)
-		assert.EqualErrorf(t, err, errors.ErrInterrupted.Error(), "sync stop. err=%v", err)
+		assert.EqualErrorf(t, err, errors.ErrInterrupted.Error(), "sync stop. err=%+v", err)
 
 		wg.Done()
 	}()
 
 	// when stop syncer
 	wg.Add(1)
-	time.AfterFunc(time.Millisecond, func() {
+	go func() {
 		t.Logf("call syncer Stop")
+		for !sSyncer.IsForceSyncing() {
+			runtime.Gosched()
+		}
+
 		sSyncer.Stop()
 		wg.Done()
-	})
+	}()
 
 	wg.Wait()
 }
@@ -517,7 +502,7 @@ func TestSyncSimpleStateSyncJoinAndLeave(t *testing.T) {
 	srcNM.join(dstNM)
 
 	// given init db for source sync manager
-	const dataSize = 100
+	const dataSize = 1000
 	ws := state.NewWorldState(srcdb, nil, nil, nil, nil)
 	for i := range [dataSize]int{} {
 		v := []byte{byte(i)}
