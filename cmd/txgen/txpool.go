@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 ICON Foundation
+ * Copyright 2023 ICON Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,23 +12,32 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
-package lcimporter
+package main
 
 import (
-	"github.com/icon-project/goloop/chain/base"
-	"github.com/icon-project/goloop/common"
-	"github.com/icon-project/goloop/icon/blockv0/lcstore"
-	"github.com/icon-project/goloop/service/eeproxy"
+	v3 "github.com/icon-project/goloop/server/v3"
+	"sync"
 )
 
-type Config struct {
-	Validators  []*common.Address   `json:"validators"`
-	StoreURI    string              `json:"store_uri"`
-	MaxRPS      int                 `json:"max_rps"`
-	CacheConfig lcstore.CacheConfig `json:"cache_config"`
-	BaseDir  string
-	Platform base.Platform
-	ProxyMgr eeproxy.Manager
+type TxPool struct {
+	Pool sync.Pool
+	Base v3.TransactionParam
+}
+
+func (p *TxPool) Init() {
+	p.Pool.New = func() interface{} {
+		var tx = p.Base
+		return &tx
+	}
+}
+
+func (p *TxPool) Get() *v3.TransactionParam {
+	return p.Pool.Get().(*v3.TransactionParam)
+}
+
+func (p *TxPool) Put(tx interface{}) {
+	p.Pool.Put(tx)
 }

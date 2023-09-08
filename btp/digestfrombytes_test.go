@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 ICON Foundation
+ * Copyright 2023 ICON Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package lcimporter
+package btp
 
-import (
-	"github.com/icon-project/goloop/chain/base"
-	"github.com/icon-project/goloop/common"
-	"github.com/icon-project/goloop/icon/blockv0/lcstore"
-	"github.com/icon-project/goloop/service/eeproxy"
-)
+import "testing"
 
-type Config struct {
-	Validators  []*common.Address   `json:"validators"`
-	StoreURI    string              `json:"store_uri"`
-	MaxRPS      int                 `json:"max_rps"`
-	CacheConfig lcstore.CacheConfig `json:"cache_config"`
-	BaseDir  string
-	Platform base.Platform
-	ProxyMgr eeproxy.Manager
+func FuzzNewDigestFromBytes(f *testing.F) {
+	cases := [][]byte{
+		[]byte("\xd7\xcdk>y\x11\xf9("),
+	}
+	for _, c := range cases {
+		f.Add(c)
+	}
+	f.Fuzz(func(t *testing.T, bs []byte) {
+		_, _ = NewDigestFromBytes(bs)
+	})
 }
